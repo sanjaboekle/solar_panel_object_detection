@@ -1,6 +1,6 @@
 # Data folders
 data/
-maxar_solar/
+datasets/maxar_solar/
 
 # macOS' DS_Store
 .DS_Store
