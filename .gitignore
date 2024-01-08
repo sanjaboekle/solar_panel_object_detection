@@ -2,6 +2,7 @@
 data/
 datasets/maxar_solar/
 runs/
+downloaded_models/
 
 
 # macOS' DS_Store
