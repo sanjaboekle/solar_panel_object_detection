@@ -1,6 +1,6 @@
 # Data folders
 data/
-datasets/maxar_solar/
+datasets/
 runs/
 downloaded_models/
 
