@@ -1,0 +1,13 @@
+# Training data directory
+train: Kasmi_2023/train/images
+# Validation data directory
+val: Kasmi_2023/val/images
+# Test data directory
+test: Kasmi_2023/test/images
+
+# number of classes
+nc: 1
+
+# class names
+names:
+  0: sp
