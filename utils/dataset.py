@@ -1,11 +1,13 @@
 import os
 import torch
 
-from torchvision.io import read_image
+from torchvision.io import read_image, ImageReadMode
 from torchvision.ops.boxes import masks_to_boxes
 from torchvision import tv_tensors
 from torchvision.transforms.v2 import functional as F
 from torch.utils.data import Dataset
+import numpy as np
+from PIL import Image
 
 
 class SolarPanelDataset(Dataset):
@@ -27,10 +29,10 @@ class SolarPanelDataset(Dataset):
     def __getitem__(self, idx):
         # load images and masks
         img_path = os.path.join(self.root, "img", self.imgs[idx])
-        img = read_image(img_path)
+        img = read_image(img_path, mode=ImageReadMode.RGB)
 
         mask_path = os.path.join(self.root, "mask", self.masks[idx])
-        mask = read_image(mask_path)
+        mask = read_image(mask_path, mode=ImageReadMode.RGB)
         # instances are encoded as different colors
         obj_ids = torch.unique(mask)
         # first id is the background, so remove it
@@ -65,9 +67,10 @@ class SolarPanelDataset(Dataset):
         target["iscrowd"] = iscrowd
 
         if self.transforms is not None:
-            img, target = self.transforms(img, target)
+            if isinstance(img, Image.Image) or isinstance(img, np.ndarray):
+                img = self.transforms(img)  # earlier version had (img, target)
 
-        return img, target
+        return img, mask, target
 
     def __len__(self):
         return len(self.imgs)
