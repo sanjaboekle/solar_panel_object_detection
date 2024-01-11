@@ -87,24 +87,22 @@ else:
         # Make prediction
         predictions = import_and_predict(image, model, (400, 400))
         
+        # Remove image
         display_image.empty()
-        # Extract the names of detected objects
-        # boxes = predictions[0].boxes
-        # names = predictions[0].names
-        res_plotted = predictions[0].plot() #[:, :, ::-1]
+
+        # Plot prediction image
+        res_plotted = predictions[0].plot()
         st.image(res_plotted, caption='Detected Image', use_column_width=True)
+
+        # Print detected objects
+        boxes = predictions[0].boxes
+        object_count = len(boxes)
+        if object_count >= 1:
+            st.markdown(f"#### Number of panels detected: {object_count}")
+        elif object_count == 0:
+            st.markdown("#### No panels detected!")
 
 
 
 
 ### Control + C => stop streamlit app
-    
-
-
-### try except statement:
-
-# try:
-#     model = YOLO(model_path)
-# except Exception as ex:
-#     st.error(f"Unable to load model. Check the specified path: {model_path}")
-#     st.error(ex)
