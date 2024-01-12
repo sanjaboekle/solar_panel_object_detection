@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image, ImageOps
 
 import streamlit as st
-import gdown
+# import gdown
 
 import ultralytics
 from ultralytics import YOLO
@@ -22,18 +22,14 @@ st.set_page_config(
 )
 
 
-with st.sidebar:
-        st.title("Solar Panel Detection")
-        st.subheader("Accurate detection of ...")
-
 # Main page heading
 st.write("""
-         # Solar Panel Detection using YOLOv8
+         # Solar Panel Detection
          """
          )
 
 # Sidebar
-st.sidebar.header("ML Model Config")
+st.sidebar.header("Model Configuration")
 
 # Model Options
 model_type = st.sidebar.radio(
