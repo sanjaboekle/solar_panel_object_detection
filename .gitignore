@@ -1,9 +1,15 @@
 # Data folders
 data/
 datasets/
+
+# Run folder and loaded models
 runs/
 downloaded_models/
 model/
+
+# Images used for streamlit app
+downloaded_geotiffs/
+*.tif
 
 
 
