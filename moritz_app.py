@@ -40,7 +40,7 @@ st.sidebar.header("Model Configuration")
 model_type = st.sidebar.radio(
     "Select Task", ['Detection'])
 
-confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 40)) / 100
+confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 25)) / 100
 
 
 # Selecting Detection Or Segmentation
@@ -105,8 +105,8 @@ with tab1:
     streamlit_folium.folium_static(map)
 
     # Define the extents of the bounding box
-    longitude_extent = 0.0008
-    latitude_extent = 0.0005
+    longitude_extent = 0.0005
+    latitude_extent = 0.0003
 
     # Create the bounding box
     bbox = [
@@ -116,41 +116,38 @@ with tab1:
         location.latitude + latitude_extent,
     ]
 
-    # if m.user_roi_bounds() is not None:
-    #     bbox = m.user_roi_bounds()
+    # if map.user_roi_bounds() is not None:
+    #     bbox = map.user_roi_bounds()
     # else:
     #     bbox = [-95.3704, 29.6762, -95.368, 29.6775]
 
-    location_button = st.button("Use Location")
-    if location_button:
+    locate_and_detect = st.button("Use Location & Detect Solar Panels")
+    if locate_and_detect:
 
         image_path = f"satellite_image_{location}.tif"
         tms_to_geotiff(output=image_path, bbox=bbox, zoom=20, source="Satellite", overwrite=True)
     
         # Display Image
         geo_image = Image.open(image_path)
-        st.image(geo_image, caption="Satellite Image")
+        # st.image(geo_image, caption="Satellite Image")
 
-        detect_button = st.button("Detect Solar Panels")
+        # Make prediction
+        predictions = import_and_predict(geo_image, model, (400, 400))
+        
+        # # Remove image
+        # display_image.empty()
 
-        if detect_button:
-                # Make prediction
-                predictions = import_and_predict(geo_image, model, (400, 400))
-                
-                # # Remove image
-                # display_image.empty()
+        # Plot prediction image
+        res_plotted = predictions[0].plot()
+        st.image(res_plotted, caption='Detected Image', use_column_width=True)
 
-                # Plot prediction image
-                res_plotted = predictions[0].plot()
-                st.image(res_plotted, caption='Detected Image', use_column_width=True)
-
-                # # Print detected objects
-                # boxes = predictions[0].boxes
-                # object_count = len(boxes)
-                # if object_count >= 1:
-                #     st.markdown(f"#### Number of panels detected: {object_count}")
-                # elif object_count == 0:
-                #     st.markdown("#### No panels detected!")
+        # # Print detected objects
+        # boxes = predictions[0].boxes
+        # object_count = len(boxes)
+        # if object_count >= 1:
+        #     st.markdown(f"#### Number of panels detected: {object_count}")
+        # elif object_count == 0:
+        #     st.markdown("#### No panels detected!")
 
 
 ### Image Upload
