@@ -3,30 +3,27 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageOps
 
-import streamlit as st
-# import gdown
-
 import ultralytics
 from ultralytics import YOLO
 
-import leafmap.foliumap as leafmap
+import streamlit as st
+import streamlit_folium as st_folium
+# import gdown
 
+import folium
+import leafmap.foliumap as leafmap
 from leafmap import tms_to_geotiff
-import streamlit_folium
 from geopy.geocoders import Nominatim
 
-# hide deprication warnings which directly don't affect the working of the application
-# import warnings
-# warnings.filterwarnings("ignore")
 
 
 # Page layout
 st.set_page_config(
     page_title="Solar Panel Detection using YOLOv8",
     page_icon = ":satellite:",
-    initial_sidebar_state = 'auto'
+    initial_sidebar_state = 'auto',
+    layout="wide"
 )
-
 
 # Main page heading
 st.write("""
@@ -43,11 +40,6 @@ model_type = st.sidebar.radio(
 confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 25)) / 100
 
 
-# Selecting Detection Or Segmentation
-if model_type == 'Detection':
-    model_path = "./downloaded_models/yolov8_medium_20e.pt"
-    # model_path = Path(settings.DETECTION_MODEL)
-
 
 # Load Pre-trained ML Model
 
@@ -58,7 +50,11 @@ if model_type == 'Detection':
 # drive_file
 
 
-# From local machine:
+# From local machine
+if model_type == 'Detection':
+    model_path = "./downloaded_models/yolov8_medium_20e.pt"
+    # model_path = Path(settings.DETECTION_MODEL)
+
 try:
     model = YOLO(model_path)
 except Exception as ex:
@@ -66,6 +62,8 @@ except Exception as ex:
     st.error(ex)
 
 
+
+# Helper functions
 def import_and_predict(image_data, model, size):
     image = ImageOps.fit(image_data, size, Image.LANCZOS)
     img = np.asarray(image.convert("RGB"))
@@ -74,80 +72,113 @@ def import_and_predict(image_data, model, size):
 
 
 
+# Different features in different tabs
+
 tab1, tab2 = st.tabs(["Geolocation", "Image Upload"])
 
 
 ### Geolocator
 
 with tab1:
-    st.header("Type in your location")
+
+    st.header("Choose any location to detect solar panels")
 
     # Ask the user for the location
     location_input = st.text_input("Enter a location:")
 
-    if location_input == "":
-        location_input = "Weiskopffstraße 16, 12459 Berlin"
+    # Location to start from
+    if location_input is "":
+        location_input = "Alt-Berlin, 10178 Berlin"
 
+    # Get the location coordinates
     geolocator = Nominatim(user_agent="solar")
+    location = geolocator.geocode(location_input) # contains latitude and longitude attributes
 
-    location = geolocator.geocode(location_input)
 
-    st.write(location.latitude, location.longitude)
+    col1, col2 = st.columns(2)
 
-    map = leafmap.Map(center=[location.latitude, location.longitude], zoom=19)
-    map.add_tile_layer(
-        url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        name="Satellite",
-        attribution="Map Data © Google",
-    )
+    with col1:
 
-    # Use streamlit_folium to display the map in streamlit
-    streamlit_folium.folium_static(map)
-
-    # Define the extents of the bounding box
-    longitude_extent = 0.0005
-    latitude_extent = 0.0003
-
-    # Create the bounding box
-    bbox = [
-        location.longitude - longitude_extent,
-        location.latitude - latitude_extent,
-        location.longitude + longitude_extent,
-        location.latitude + latitude_extent,
-    ]
-
-    # if map.user_roi_bounds() is not None:
-    #     bbox = map.user_roi_bounds()
-    # else:
-    #     bbox = [-95.3704, 29.6762, -95.368, 29.6775]
-
-    locate_and_detect = st.button("Use Location & Detect Solar Panels")
-    if locate_and_detect:
-
-        image_path = f"satellite_image_{location}.tif"
-        tms_to_geotiff(output=image_path, bbox=bbox, zoom=20, source="Satellite", overwrite=True)
-    
-        # Display Image
-        geo_image = Image.open(image_path)
-        # st.image(geo_image, caption="Satellite Image")
-
-        # Make prediction
-        predictions = import_and_predict(geo_image, model, (400, 400))
+        # Or ask for a click on the map
+        st.write("Or choose a location on the Map by clicking on it.")
         
-        # # Remove image
-        # display_image.empty()
 
-        # Plot prediction image
-        res_plotted = predictions[0].plot()
-        st.image(res_plotted, caption='Detected Image', use_column_width=True)
+        # Create the map
+        map = leafmap.Map(
+            center=[location.latitude, location.longitude], 
+            zoom=15
+        )
+        map.add_tile_layer(
+            url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+            name="Satellite",
+            attribution="Map Data © Google"
+        )
+        # Use streamlit_folium to display the map in streamlit
+        st_map = st_folium.st_folium(map)
 
-        # # Print detected objects
-        # boxes = predictions[0].boxes
-        # object_count = len(boxes)
-        # if object_count >= 1:
-        #     st.markdown(f"#### Number of panels detected: {object_count}")
-        # elif object_count == 0:
-        #     st.markdown("#### No panels detected!")
+
+        # Choose coordinates for bounding box
+        if st_map["last_clicked"] is None:
+            latitude = st_map["center"]["lat"]
+            longitude = st_map["center"]["lng"]
+        else:
+            latitude = st_map["last_clicked"]["lat"]
+            longitude = st_map["last_clicked"]["lng"]
+
+
+        # TODO Make location information adaptable -> use st_map["center"]["lat"]/["lng"] instead of location[0]
+        # Add current location information
+        location_info = str.split(location[0], ", ")
+        neighborhood = location_info[2]
+        city = location_info[3]
+        zip_code = location_info[4]
+        country = location_info[5]
+        st.write(f"{country}, {city}, {neighborhood}, zip code: {zip_code}")
+
+
+        # Define the extents of the bounding box
+        longitude_extent = 0.0005
+        latitude_extent = 0.0003
+
+        # Create the bounding box
+        bbox = [
+            longitude - longitude_extent,
+            latitude - latitude_extent,
+            longitude + longitude_extent,
+            latitude + latitude_extent,
+        ]
+
+    with col2:
+        
+        st.markdown("#")
+        locate_and_detect = st.button("Detect Solar Panels")
+
+        if locate_and_detect:
+
+            image_path = f"satellite_image_{location}.tif"
+            tms_to_geotiff(output=image_path, bbox=bbox, zoom=20, source="Satellite", overwrite=True)
+        
+            # Display Image
+            geo_image = Image.open(image_path)
+            # st.image(geo_image, caption="Satellite Image")
+
+            # Make prediction
+            predictions = import_and_predict(geo_image, model, (400, 400))
+            
+            # # Remove image
+            # display_image.empty()
+
+            # Plot prediction image
+            res_plotted = predictions[0].plot()
+            st.image(res_plotted, caption='Detected Image', use_column_width=True)
+
+            # Print detected objects
+            boxes = predictions[0].boxes
+            object_count = len(boxes)
+            if object_count >= 1:
+                st.markdown(f"#### Number of panels detected: {object_count}")
+            elif object_count == 0:
+                st.markdown("#### No panels detected!")
 
 
 ### Image Upload
