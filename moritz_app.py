@@ -68,7 +68,7 @@ except Exception as ex:
 def import_and_predict(image_data, model, size):
     image = ImageOps.fit(image_data, size, Image.LANCZOS)
     img = np.asarray(image.convert("RGB"))
-    prediction = model.predict(img, show=True, save=True, imgsz=400, conf=confidence)
+    prediction = model.predict(img, imgsz=400, conf=confidence) #, show=True, save=True)
     return prediction
 
 
