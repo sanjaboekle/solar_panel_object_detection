@@ -1,9 +1,10 @@
+
 # Training data directory
-train: kasmi_solar/train/img_with_panels
+train: kasmi_solar/train
 # Validation data directory
-val: kasmi_solar/val/img_with_panels
+val: kasmi_solar/val
 # Test data directory
-test: kasmi_solar/test/img_with_panels
+test: kasmi_solar/test
 
 # number of classes
 nc: 1
