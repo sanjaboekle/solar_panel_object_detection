@@ -127,14 +127,17 @@ with tab1:
             longitude = st_map["last_clicked"]["lng"]
 
 
-        # TODO Make location information adaptable -> use st_map["center"]["lat"]/["lng"] instead of location[0]
-        # Add current location information
-        location_info = str.split(location[0], ", ")
-        neighborhood = location_info[2]
-        city = location_info[3]
-        zip_code = location_info[4]
-        country = location_info[5]
-        st.write(f"{country}, {city}, {neighborhood}, zip code: {zip_code}")
+        # Add location information of map center
+        curr_lat, curr_long = st_map["center"]["lat"], st_map["center"]["lng"]
+        location_info = geolocator.reverse((curr_lat, curr_long))
+        
+        location_info_sep = str.split(str(location_info), ", ")
+        country = location_info_sep[-1]
+        neighborhood = location_info_sep[-4]
+        city = location_info_sep[-3]
+        street = location_info_sep[-6]
+
+        st.markdown(f"##### {country} | {city} | {neighborhood} | {street}")
 
 
         # Define the extents of the bounding box
