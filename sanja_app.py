@@ -1,25 +1,23 @@
 import streamlit as st
-import os
-import leafmap.foliumap as leafmap
+import folium
+from streamlit_folium import folium_static
 
-# from samgeo import SamGeo, tms_to_geotiff, get_basemaps
-from leafmap import tms_to_geotiff
-import streamlit_folium
-from geopy.geocoders import Nominatim
+# Create a map
+m = folium.Map(location=[0, 0], zoom_start=13)
 
+# Add a marker at location (0, 0)
+folium.Marker([0, 0]).add_to(m)
 
-dark_mode_button = st.button("Dark Mode")
-light_mode_button = st.button("Light Mode")
+# Create a map container
+map_container = st.container()
 
-if dark_mode_button:
-    [theme]
-    base = "dark"
-elif light_mode_button:
-    [theme]
-    base = "light"
+# Generate HTML code for fullscreen button
+html_code = """
+<button onclick="document.documentElement.requestFullscreen()">Fullscreen</button>
+"""
 
+# Embed the map container and the fullscreen button in an HTML element
+html_element = st.html(html_code, unsafe_allow_html=True)
 
-st.title("My first App")
-st.write("This is my first Streamlit application.")
-
-st.sidebar.title("My Sidebar")
+# Add the map to the HTML element
+folium_static(m, element_id="map")
