@@ -52,7 +52,8 @@ confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 25)) / 
 
 # From local machine
 if model_type == 'Detection':
-    model_path = "./downloaded_models/yolov8_medium_20e.pt"
+    model_path = "downloaded_models/yolov8_medium_20e.pt"
+    # model_path = "downloaded_models/yolov8_medium_20e.torchscript"
     # model_path = Path(settings.DETECTION_MODEL)
 
 try:
