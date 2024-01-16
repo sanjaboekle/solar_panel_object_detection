@@ -82,14 +82,14 @@ tab1, tab2 = st.tabs(["Geolocation", "Image Upload"])
 
 with tab1:
 
-    st.header("Choose any location to detect solar panels")
+    st.header("Choose a location to detect solar panels")
 
     # Ask the user for the location
-    location_input = st.text_input("Enter a location:")
+    location_input = st.text_input("Enter an address:")
 
     # Location to start from
     if location_input is "":
-        location_input = "Alt-Berlin, 10178 Berlin"
+        location_input = "Weiskopffstraße 16, 12459 Berlin"
 
     # Get the location coordinates
     geolocator = Nominatim(user_agent="solar")
@@ -107,7 +107,7 @@ with tab1:
         # Create the map
         map = leafmap.Map(
             center=[location.latitude, location.longitude], 
-            zoom=15
+            zoom=18
         )
         map.add_tile_layer(
             url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
@@ -118,26 +118,22 @@ with tab1:
         st_map = st_folium.st_folium(map)
 
 
-        # Choose coordinates for bounding box
-        if st_map["last_clicked"] is None:
-            latitude = st_map["center"]["lat"]
-            longitude = st_map["center"]["lng"]
-        else:
-            latitude = st_map["last_clicked"]["lat"]
-            longitude = st_map["last_clicked"]["lng"]
+        # Coordinates for bounding box
+        latitude = st_map["center"]["lat"]
+        longitude = st_map["center"]["lng"]
 
 
-        # Add location information of map center
-        curr_lat, curr_long = st_map["center"]["lat"], st_map["center"]["lng"]
-        location_info = geolocator.reverse((curr_lat, curr_long))
+        # # Add location information of map center
+        # curr_lat, curr_long = st_map["center"]["lat"], st_map["center"]["lng"]
+        # location_info = geolocator.reverse((curr_lat, curr_long))
 
-        location_info_sep = str.split(str(location_info), ", ")
-        country = location_info_sep[-1]
-        city = location_info_sep[-3]
-        neighborhood = location_info_sep[-4]
-        street = location_info_sep[-6]
+        # location_info_sep = str.split(str(location_info), ", ")
+        # country = location_info_sep[-1]
+        # city = location_info_sep[-3]
+        # neighborhood = location_info_sep[-4]
+        # street = location_info_sep[-6]
 
-        st.markdown(f"##### {country} | {city} | {neighborhood} | {street}")
+        # st.markdown(f"##### {country} | {city} | {neighborhood} | {street}")
 
 
         # Define the extents of the bounding box
