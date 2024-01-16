@@ -21,7 +21,7 @@ from geopy.geocoders import Nominatim
 st.set_page_config(
     page_title="Solar Panel Detection using YOLOv8",
     page_icon = ":satellite:",
-    initial_sidebar_state = 'auto',
+    initial_sidebar_state = 'collapsed',
     layout="wide"
 )
 
