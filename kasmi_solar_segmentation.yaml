@@ -1,0 +1,13 @@
+# Training data directory
+train: kasmi_solar/train/img_with_panels
+# Validation data directory
+val: kasmi_solar/val/img_with_panels
+# Test data directory
+test: kasmi_solar/test/img_with_panels
+
+# number of classes
+nc: 1
+
+# class names
+names:
+  0: solar_panel
