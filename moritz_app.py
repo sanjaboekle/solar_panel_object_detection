@@ -35,9 +35,9 @@ st.sidebar.header("Model Configuration")
 
 # Model Options
 model_type = st.sidebar.radio(
-    "Select Task", ['Detection'])
+    "Select Task", ['Detection', 'Segmentation'])
 
-confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 25)) / 100
+confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 40)) / 100
 
 
 
@@ -130,7 +130,7 @@ with tab1:
         # Add location information of map center
         curr_lat, curr_long = st_map["center"]["lat"], st_map["center"]["lng"]
         location_info = geolocator.reverse((curr_lat, curr_long))
-        
+
         location_info_sep = str.split(str(location_info), ", ")
         country = location_info_sep[-1]
         neighborhood = location_info_sep[-4]
