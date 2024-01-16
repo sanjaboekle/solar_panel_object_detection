@@ -52,8 +52,8 @@ confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 40)) / 
 
 # From local machine
 if model_type == 'Detection':
-    model_path = "downloaded_models/yolov8_medium_20e.pt"
-    # model_path = "downloaded_models/yolov8_medium_20e.torchscript"
+    # model_path = "downloaded_models/yolov8_medium_20e.pt"
+    model_path = "downloaded_models/best_yolov8m_50.torchscript"
     # model_path = Path(settings.DETECTION_MODEL)
 
 try:
@@ -133,8 +133,8 @@ with tab1:
 
         location_info_sep = str.split(str(location_info), ", ")
         country = location_info_sep[-1]
-        neighborhood = location_info_sep[-4]
         city = location_info_sep[-3]
+        neighborhood = location_info_sep[-4]
         street = location_info_sep[-6]
 
         st.markdown(f"##### {country} | {city} | {neighborhood} | {street}")
@@ -155,34 +155,35 @@ with tab1:
     with col2:
         
         st.markdown("#")
-        locate_and_detect = st.button("Detect Solar Panels")
+        st.markdown("######")
+        # locate_and_detect = st.button("Detect Solar Panels")
 
-        if locate_and_detect:
+        # if locate_and_detect:
 
-            image_path = f"satellite_image_{location}.tif"
-            tms_to_geotiff(output=image_path, bbox=bbox, zoom=20, source="Satellite", overwrite=True)
+        image_path = f"satellite_image_{location}.tif"
+        tms_to_geotiff(output=image_path, bbox=bbox, zoom=20, source="Satellite", overwrite=True)
+    
+        # Display Image
+        geo_image = Image.open(image_path)
+        # st.image(geo_image, caption="Satellite Image")
+
+        # Make prediction
+        predictions = import_and_predict(geo_image, model, (400, 400))
         
-            # Display Image
-            geo_image = Image.open(image_path)
-            # st.image(geo_image, caption="Satellite Image")
+        # # Remove image
+        # display_image.empty()
 
-            # Make prediction
-            predictions = import_and_predict(geo_image, model, (400, 400))
-            
-            # # Remove image
-            # display_image.empty()
+        # Plot prediction image
+        res_plotted = predictions[0].plot()
+        st.image(res_plotted, caption='Detected Image', use_column_width=True)
 
-            # Plot prediction image
-            res_plotted = predictions[0].plot()
-            st.image(res_plotted, caption='Detected Image', use_column_width=True)
-
-            # Print detected objects
-            boxes = predictions[0].boxes
-            object_count = len(boxes)
-            if object_count >= 1:
-                st.markdown(f"#### Number of panels detected: {object_count}")
-            elif object_count == 0:
-                st.markdown("#### No panels detected!")
+        # Print detected objects
+        boxes = predictions[0].boxes
+        object_count = len(boxes)
+        if object_count >= 1:
+            st.markdown(f"#### Number of panels detected: {object_count}")
+        elif object_count == 0:
+            st.markdown("#### No panels detected!")
 
 
 ### Image Upload
