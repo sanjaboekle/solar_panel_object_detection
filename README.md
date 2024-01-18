@@ -1,4 +1,4 @@
-# solar_panel_object_detection
+# PanelVision - deep learning object detection of solar panels on satellite imagery
 
 ## folder structure
 datasets
