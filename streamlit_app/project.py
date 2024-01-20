@@ -1,14 +1,31 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 
-def home_page():
+def project_page():
+    with st.sidebar:
+        st.sidebar.image("streamlit_app/logo_no_background.png", width=250)
+        st.title("Welcome to PanelVision!")
+        st.markdown(
+            "PanelVision, dedicated to renewable energy, embraces AI's potential to combat climate change by employing deep learning image detection and segmentation methodologies to optimize solar panel deployment and monitor installation progress."
+        )
+        st.write("\n")
+        st.markdown(
+            "PanelVision is our final project of a data science bootcamp at the <a href='https://www.wbscodingschool.com/' target='_blank'>WBS Coding School</a>.",
+            unsafe_allow_html=True,
+        )
+
     st.divider()
     st.markdown(
-        "<h2 style='text-align: center; color: black;'>Illuminating the Future with Solar Up: Harnessing the Power of the Sun through Advanced AI Technologies</h2>",
+        "<h2 style='text-align: center; color: black;'>Object detection of solar panels on satellite imagery with deep learning models</h2>",
         unsafe_allow_html=True,
     )
     st.write("\n")
-    st.image("streamlit_app/banner_solarup.png")
+    components.iframe(
+        "https://docs.google.com/presentation/d/e/2PACX-1vS-RukbyKF5_zVVpeCLgt38XH-GxreQ81aHlHVwOZfKnzyPUzAYqF57xlpF-FAHR4pDWJk7LmeBqi7l/embed?start=false&loop=true&delayms=3000",
+        width=1000,
+        height=565,
+    )
     st.write("\n")
     st.markdown(
         "<h3 style='text-align: left;'>Overview</h3>",
