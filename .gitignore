@@ -7,9 +7,13 @@ runs/
 downloaded_models/
 model/
 
-# Images used for streamlit app
+# Images and directories used for streamlit app
 downloaded_geotiffs/
 *.tif
+.streamlit/
+
+# Downloaded YOLO models
+yolov8*.pt
 
 
 
