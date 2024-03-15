@@ -1,9 +1,11 @@
+path: kasmi_solar_detection
+
 # Training data directory
-train: kasmi_solar/train/images
+train: train/images
 # Validation data directory
-val: kasmi_solar/val/images
+val: val/images
 # Test data directory
-test: kasmi_solar/test/images
+test: test/images
 
 # number of classes
 nc: 1
