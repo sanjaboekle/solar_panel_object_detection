@@ -8,7 +8,6 @@ from ultralytics import YOLO
 
 import streamlit as st
 import streamlit_folium as st_folium
-# import gdown
 
 import folium
 import leafmap.foliumap as leafmap
@@ -43,18 +42,9 @@ confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 40)) / 
 
 # Load Pre-trained ML Model
 
-# # From Google Drive:
-# id = "10DXgjv9c7TONGhE38oI5oHTWff8NJmJn"
-# output = 'yolov8_medium_20e.pt'
-# drive_file = gdown.download(id=id, output=output, quiet=False)
-# drive_file
-
-
 # From local machine
 if model_type == 'Detection':
-    # model_path = "downloaded_models/yolov8_medium_20e.pt"
-    model_path = "downloaded_models/best_yolov8m_50.torchscript"
-    # model_path = Path(settings.DETECTION_MODEL)
+    model_path = "downloaded_models/best_yolov8m_20.torchscript"
 
 try:
     model = YOLO(model_path)
@@ -123,19 +113,6 @@ with tab1:
         longitude = st_map["center"]["lng"]
 
 
-        # # Add location information of map center
-        # curr_lat, curr_long = st_map["center"]["lat"], st_map["center"]["lng"]
-        # location_info = geolocator.reverse((curr_lat, curr_long))
-
-        # location_info_sep = str.split(str(location_info), ", ")
-        # country = location_info_sep[-1]
-        # city = location_info_sep[-3]
-        # neighborhood = location_info_sep[-4]
-        # street = location_info_sep[-6]
-
-        # st.markdown(f"##### {country} | {city} | {neighborhood} | {street}")
-
-
         # Define the extents of the bounding box
         longitude_extent = 0.0005
         latitude_extent = 0.0003
@@ -152,23 +129,17 @@ with tab1:
         
         st.markdown("#")
         st.markdown("######")
-        # locate_and_detect = st.button("Detect Solar Panels")
 
-        # if locate_and_detect:
 
         image_path = f"satellite_image_{location}.tif"
         tms_to_geotiff(output=image_path, bbox=bbox, zoom=20, source="Satellite", overwrite=True)
     
         # Display Image
         geo_image = Image.open(image_path)
-        # st.image(geo_image, caption="Satellite Image")
 
         # Make prediction
         predictions = import_and_predict(geo_image, model, (400, 400))
         
-        # # Remove image
-        # display_image.empty()
-
         # Plot prediction image
         res_plotted = predictions[0].plot()
         st.image(res_plotted, caption='Detected Image', use_column_width=True)
@@ -215,11 +186,6 @@ with tab2:
                 st.markdown(f"#### Number of panels detected: {object_count}")
             elif object_count == 0:
                 st.markdown("#### No panels detected!")
-
-
-
-
-
 
 
 
