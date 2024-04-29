@@ -30,7 +30,8 @@ You can easily replicate our results and build your own **Solar Panel Detector**
 3. Train the model using `02_Training_Detection_Model.ipynb`, ...
     * ... either on Google Colab, in which case you will need to upload the `kasmi_solar_detection.yaml` config file (tells YOLO where to find the data and labels) and the `kasmi_solar_detection.zip` folder created in step 2 to your Google Drive, and mount your Google Drive to Colab, ...
     * ... or locally, in which case you will need to slightly adapt the script to navigate to the training data etc. 
-4. Run the streamlit app using the command `streamlit run 03_Streamlit_App_Detection_Model.py`.
+4. Move the downloaded model (`best.torchscript`) to the `downloaded_models` directory.
+5. Run the streamlit app using the command `streamlit run 03_Streamlit_App_Detection_Model.py`.
 
 
 
