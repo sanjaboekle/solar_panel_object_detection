@@ -44,7 +44,7 @@ confidence = float(st.sidebar.slider("Select Model Confidence", 25, 100, 40)) / 
 
 # From local machine
 if model_type == 'Detection':
-    model_path = "downloaded_models/best_yolov8m_20.torchscript"
+    model_path = "downloaded_models/best.torchscript"
 
 try:
     model = YOLO(model_path)
