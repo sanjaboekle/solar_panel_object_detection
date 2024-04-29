@@ -12,6 +12,15 @@ In this project we train a YOLOv8 model to detect solar panels on satellite imag
 
 
 
+
+
+
+https://github.com/sanjaboekle/solar_panel_object_detection/assets/131270458/b92ebdef-c8ed-4071-9288-79655293dfa4
+
+
+
+
+
 ## Steps
 
 You can easily replicate our results and build your own **Solar Panel Detector** by running our scripts successively.
